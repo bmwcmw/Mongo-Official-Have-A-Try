@@ -16,11 +16,17 @@
 
 package course;
 
+import com.mongodb.DB;
+import com.mongodb.DBObject;
 import com.mongodb.ErrorCategory;
+import com.mongodb.MongoClient;
 import com.mongodb.MongoWriteException;
+import com.mongodb.QueryBuilder;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+
 import org.bson.Document;
+
 import sun.misc.BASE64Encoder;
 
 import java.io.UnsupportedEncodingException;
@@ -38,6 +44,15 @@ public class UserDAO {
     public UserDAO(final MongoDatabase blogDatabase) {
         usersCollection = blogDatabase.getCollection("users");
     }
+    
+    public static void main(String[] args) throws Exception {
+        MongoClient client = new MongoClient("localhost", 27017);
+        UserDAO user = new UserDAO(client.getDatabase("test"));
+        //System.out.println(user.addUser("bb", "123", null));
+        //System.out.println(user.addUser("cc", "456", "a@b.c"));
+        System.out.println(user.validateLogin("bb", "123"));
+        client.close();
+    }
 
     // validates that username is unique and insert into db
     public boolean addUser(String username, String password, String email) {
@@ -48,15 +63,20 @@ public class UserDAO {
         // create an object suitable for insertion into the user collection
         // be sure to add username and hashed password to the document. problem instructions
         // will tell you the schema that the documents must follow.
+        Document document = new Document()
+                .append("_id", username)
+                .append("password", passwordHash);
 
         if (email != null && !email.equals("")) {
             // XXX WORK HERE
             // if there is an email address specified, add it to the document too.
+            document.put("email", email);
         }
 
         try {
             // XXX WORK HERE
             // insert the document into the user collection here
+            usersCollection.insertOne(document);
             return true;
         } catch (MongoWriteException e) {
             if (e.getError().getCategory().equals(ErrorCategory.DUPLICATE_KEY)) {
@@ -68,10 +88,11 @@ public class UserDAO {
     }
 
     public Document validateLogin(String username, String password) {
-        Document user = null;
-
-        // XXX look in the user collection for a user that has this username
+		Document user = null;
         // assign the result to the user variable.
+        // XXX look in the user collection for a user that has this username
+        user = usersCollection.find(eq("_id", username)).first();
+        System.out.println(user);
 
         if (user == null) {
             System.out.println("User not in database");
@@ -90,7 +111,6 @@ public class UserDAO {
         return user;
     }
 
-
     private String makePasswordHash(String password, String salt) {
         try {
             String saltedAndHashed = password + "," + salt;
@@ -105,4 +125,5 @@ public class UserDAO {
             throw new RuntimeException("UTF-8 unavailable?  Not a chance", e);
         }
     }
+    
 }
