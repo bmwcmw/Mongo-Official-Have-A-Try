@@ -1,0 +1,8 @@
+db.products.ensureIndex({"for":1},{name:"for"})
+db.products.getIndexes()
+
+db.products.find({},{for:1})
+
+db.products.find( { for : "ac3" } ).count()
+    
+db.products.find( { for : "ac3" } ).explain()
