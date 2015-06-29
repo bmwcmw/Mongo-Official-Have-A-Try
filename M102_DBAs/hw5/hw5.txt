@@ -1,0 +1,58 @@
+HOMEWORK: HOMEWORK 5.1
+Set up a replica set that includes an arbiter.
+To demonstrate that you have done this, what is the text in the "state" field for the arbiter when you run rs.status()?
+
+ANWSER : 7
+
+===================================================================
+HOMEWORK: HOMEWORK 5.2
+You have a replica set with two members, having decided that a total of two copies of your data is sufficient.
+You are concerned about robustness, however.
+Which of the following are options that will allow you to ensure that failover can occur if the first server goes down?
+Check all that apply.
+
+ANWSER : 
+T Add an arbiter.
+F Increase the number of votes for the first replica set member from one to two.
+F Increase the priority of the first server from one to two.
+T Add another data bearing node.
+
+===================================================================
+HOMEWORK: HOMEWORK 5.3
+
+At the beginning of the section, "W Timeout and Capacity Planning", Dwight mentioned something that hasn't yet been touched upon in this class: Bulk Inserts.
+
+He mentions that you can find information on them in the docs.
+Your job is to look this functionality up in the documentation, and use it for the following problem:
+
+Please insert into the m102 collection, the following 3 documents, using only a one shell query:
+{ "a" : 1 }
+{ "b" : 2 }
+{ "c" : 3 }
+
+Hints: You will not use either of the Bulk() objects, which were discussed earlier in this course. Also, this does not involve semicolons, so don't put any into the text box. Your answer should involve a single line, starting with 'db.m102...' You probably want to test this on your machine, and then copy and paste the insert query in the box below. Do not include the > sign from the beginning of the shell.
+
+ANWSER : db.m102.insert([{"a":1},{"b":2},{"c":3}])
+
+===================================================================
+HOMEWORK: HOMEWORK 5.4
+
+You would like to create a replica set that is robust to data center failure.
+You only have two data centers available. Which arrangement(s) of servers will allow you to be stay up (as in, still able to elect a primary) in the event of a failure of either data center (but not both at once)? Check all that apply.
+
+ANWSER : 
+F All 3 servers in data center 1.
+F 2 servers in data center 1, one server in data center 2.
+T None of the above.
+
+===================================================================
+HOMEWORK: HOMEWORK 5.5
+
+Consider the following scenario: You have a two member replica set, a primary, and a secondary.
+
+The data center with the primary goes down, and is expected to remain down for the foreseeable future. Your secondary is now the only copy of your data, and it is not accepting writes. You want to reconfigure your replica set config to exclude the primary, and allow your secondary to be elected, but you run into trouble. Find out the optional parameter that you'll need, and input it into the box below for your rs.reconfig(new_cfg, OPTIONAL PARAMETER).
+
+Hint: You may want to use this documentation page to solve this problem.
+Your answer should be of the form { key : value } (including brackets). Do not include the rs.reconfigure portion of the query.
+
+ANWSER : {"force":true}
