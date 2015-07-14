@@ -101,6 +101,10 @@ public class BlogPostDAO {
         // You must increment the number of likes on the comment in position `ordinal`
         // on the post identified by `permalink`.
         //
-        //
+		//
+		String toUpdate = "comments" + "." + ordinal + ".num_likes";
+
+		postsCollection.updateOne(eq("permalink", permalink), new Document(
+				"$inc", new Document(toUpdate, 1)));
     }
 }
